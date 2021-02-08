@@ -13,11 +13,15 @@ import './book-list.css';
 
 class BookList extends Component {
     componentDidMount() {
+        this.props.fetchBooks();
+
+        /*
         const {bookstoreService, booksLoaded, booksRequested, booksError} = this.props;
         booksRequested();
         bookstoreService.getBooks()
             .then((data) => booksLoaded(data))
             .catch((err) => booksError(err));
+        */
     }
 
     render() {
@@ -53,11 +57,28 @@ const mapStateToProps = ({books, loading, error}) => {
     };
 };
 
+const mapDispatchToProps = (dispatch, ownProps) => {
+    const {bookstoreService} = ownProps;
+
+    return {
+        fetchBooks: () => {
+            dispatch(booksRequested());
+            bookstoreService.getBooks()
+                .then((data) => dispatch(booksLoaded(data)))
+                .catch((err) => dispatch(booksError(err)));
+        }
+    };
+};
+
+/*
 const mapDispatchToProps = {
     booksLoaded,
     booksRequested,
     booksError
 };
+*/
+
+
 
 //const mapDispatchToProps = (dispatch) => {
     //return bindActionCreators({booksLoaded}, dispatch);
