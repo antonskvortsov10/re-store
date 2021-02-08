@@ -6,12 +6,27 @@ import ErrorIndicator from '../error-indicator';
 import { connect } from 'react-redux';
 
 import { withBookstoreService } from '../hoc';
-import { booksLoaded, booksRequested, booksError } from '../../actions';
+import { fetchBooks } from '../../actions';
+//import { booksLoaded, booksRequested, booksError } from '../../actions';
 import { compose } from '../../utils';
 
 import './book-list.css';
 
-class BookList extends Component {
+const BookList = ({books}) => {
+    return (
+        <ul className="book-list">
+            {books.map((book) => {
+                return (
+                    <li key={book.id}>
+                        <BookListItem book={book} />
+                    </li>
+                );
+            })}
+        </ul>
+    );
+};
+
+class BookListContainer extends Component {
     componentDidMount() {
         this.props.fetchBooks();
 
@@ -35,17 +50,7 @@ class BookList extends Component {
             return <ErrorIndicator />;
         }
 
-        return (
-            <ul className="book-list">
-                {books.map((book) => {
-                    return (
-                        <li key={book.id}>
-                            <BookListItem book={book} />
-                        </li>
-                    );
-                })}
-            </ul>
-        );
+        return <BookList books={books} />;
     }
 }
 
@@ -61,6 +66,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     const {bookstoreService} = ownProps;
 
     return {
+        fetchBooks: fetchBooks(bookstoreService, dispatch)
+    };
+
+    /*
+    return {
         fetchBooks: () => {
             dispatch(booksRequested());
             bookstoreService.getBooks()
@@ -68,6 +78,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                 .catch((err) => dispatch(booksError(err)));
         }
     };
+    */
 };
 
 /*
@@ -105,4 +116,4 @@ const mapDispatchToProps = {
 
 //export default withBookstoreService()(connect(mapStateToProps, mapDispatchToProps)(BookList));
 
-export default compose(withBookstoreService(), connect(mapStateToProps, mapDispatchToProps))(BookList);
+export default compose(withBookstoreService(), connect(mapStateToProps, mapDispatchToProps))(BookListContainer);
