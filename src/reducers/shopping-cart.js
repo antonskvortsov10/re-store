@@ -39,9 +39,12 @@ const updateOrder = (state, bookId, quantity) => {
     const item = cartItems[itemIndex];
     
     const newItem = updateCartItem(book, item, quantity);
+    console.log('Заказ обновлён:');
+    console.log(state);
 
     return {
-        orderTotal: 0,
+        //orderTotal: 0,
+        orderTotal: state.shoppingCart.orderTotal + quantity * book.price,
         cartItems: updateCartItems(cartItems, newItem, itemIndex)
     };
 };
